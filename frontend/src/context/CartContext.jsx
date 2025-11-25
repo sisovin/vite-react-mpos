@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
 
 const CartContext = createContext(null)
 
@@ -37,6 +37,13 @@ function reducer(state, action) {
 
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, { items: [] })
+  useEffect(() => {
+    function onNewInvoice() {
+      dispatch({ type: 'CLEAR' })
+    }
+    window.addEventListener('mpos:newInvoice', onNewInvoice)
+    return () => window.removeEventListener('mpos:newInvoice', onNewInvoice)
+  }, [])
   const value = {
     items: state.items,
     add: item => dispatch({ type: 'ADD', item }),
