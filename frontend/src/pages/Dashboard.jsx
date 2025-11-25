@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { CartProvider } from '../context/CartContext'
-import Products from '../components/Products'
-import CartSummary from '../components/CartSummary'
+import { useNavigate } from 'react-router-dom'
 
 function OpenDayCard({ onStart, onCloseDay }) {
   const [cash, setCash] = useState('')
@@ -100,6 +99,7 @@ export default function Dashboard() {
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
   }, [])
+  const navigate = useNavigate()
   return (
     <CartProvider>
       <div className="min-h-screen bg-gray-50">
@@ -118,7 +118,7 @@ export default function Dashboard() {
           <div className="w-full mb-4 flex items-center justify-between">
             {!posActive ? (
               <div className="flex items-center gap-3">
-                <button onClick={() => setPosActive(true)} disabled={!dayStarted} className={`px-4 py-2 rounded ${dayStarted ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600 cursor-not-allowed'}`}>
+                <button onClick={() => { setPosActive(true); navigate('/pos') }} disabled={!dayStarted} className={`px-4 py-2 rounded ${dayStarted ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600 cursor-not-allowed'}`}>
                   Start Cashier Duty
                 </button>
                 {!dayStarted && <div className="text-sm text-gray-500">Open the day to enable POS</div>}
@@ -139,8 +139,9 @@ export default function Dashboard() {
                 <div className="font-semibold">Point of Sale</div>
                 <div className="text-sm text-gray-500">Serving cashier session</div>
               </div>
-              <div>
-                <Products search={searchQuery} />
+              <div className="flex items-center gap-3">
+                <button onClick={() => navigate('/pos')} className={`px-4 py-2 rounded bg-blue-600 text-white`}>Open POS</button>
+                <button onClick={() => setPosActive(false)} className="px-3 py-2 rounded bg-red-500 text-white">End Duty</button>
               </div>
             </section>
           ) : (
@@ -153,21 +154,24 @@ export default function Dashboard() {
                   <h3 className="font-semibold mb-2">Quick actions</h3>
                   <div className="text-sm text-gray-600">Open a new invoice, runs reports, or quick search products.</div>
                   <div className="mt-3 flex gap-2">
-                    <button className="px-3 py-2 bg-blue-600 text-white rounded" onClick={() => { window.dispatchEvent(new Event('mpos:newInvoice')); setPosActive(true) }}>New Invoice</button>
+                    <button className="px-3 py-2 bg-blue-600 text-white rounded" onClick={() => { window.dispatchEvent(new Event('mpos:newInvoice')); setPosActive(true); navigate('/pos') }}>New Invoice</button>
                     <button className="px-3 py-2 bg-gray-200 rounded" onClick={() => alert('Reports not implemented')}>Reports</button>
                   </div>
                 </div>
               </div>
 
               <div className="col-span-1 lg:col-span-2">
-                <Products search={searchQuery} />
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <div className="font-semibold">Products</div>
+                  <div className="text-sm text-gray-500">Open the POS to browse and add products to the cart.</div>
+                  <div className="mt-3">
+                    <button className="px-3 py-2 bg-blue-600 text-white rounded" onClick={() => navigate('/pos')}>Open POS / Products Dashboard</button>
+                  </div>
+                </div>
               </div>
             </section>
           )}
-          <section className="w-full md:w-1/4">
-            {/* CartSummary should be visible in both Dashboard and POS mode - keep it present */}
-            <CartSummary />
-          </section>
+          {/* Do not show CartSummary inside Dashboard as requested */}
         </main>
       </div>
     </CartProvider>
