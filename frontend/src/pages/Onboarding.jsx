@@ -20,7 +20,7 @@ export default function Onboarding() {
         </div>
         <div className="flex items-center justify-center p-6">
           <div className="w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-xl bg-gray-100 flex items-center justify-center">
-            <img src="/assets/onboarding-illustration.svg" alt="Onboarding illustration" className="max-h-full max-w-full" />
+            <img src="/assets/onboarding-illustration.png" alt="Onboarding illustration" className="max-h-full max-w-full" />
           </div>
         </div>
       </div>

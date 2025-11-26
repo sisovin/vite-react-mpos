@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CartProvider } from '../context/CartContext'
+// CartProvider removed from here; App.jsx provides global provider
 import { useNavigate } from 'react-router-dom'
 
 function OpenDayCard({ onStart, onCloseDay }) {

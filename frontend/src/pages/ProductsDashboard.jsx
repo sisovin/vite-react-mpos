@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CartProvider } from '../context/CartContext'
+// CartProvider removed; App.jsx wraps the whole app instead
 import Products from '../components/Products'
 import CartSummary from '../components/CartSummary'
 import { useNavigate } from 'react-router-dom'
