@@ -1,5 +1,200 @@
 # 📘 Project Document: POS System (React + Node)
 
+## 1. Overview
+
+- **Name:** MPOS (Minimal POS / m-pos)
+- **Goal:** A modern POS system prototype demonstrating product browsing, cart management, and a simple checkout/invoice flow.
+- **Architecture:** Frontend in Vite + React 19.2 + Tailwind CSS; Backend in Node.js + Express that proxies product APIs and contains a demo checkout endpoint.
+- **Data source:** Dummy Products API (dev) and optionally WooCommerce REST API (prod). The backend proxies external APIs so client secrets don't leak into the browser.
+
+---
+
+## 2. High-Level Architecture & Flows
+
+- Frontend (Vite + React): SPA. Uses React Router and a global cart via `CartContext`.
+- Backend (Express): Provides proxy routes under `/api/*` that return normalized product object shapes for the frontend.
+- Product fetching flow: Frontend calls `/api/products` → Backend fetches from the configured `DATA_SOURCE` → Backend normalizes and returns products.
+- Checkout flow (demo): Frontend posts items to `/api/checkout`, backend responds with total; the frontend renders a printable invoice and uses `window.print()`.
+
+---
+
+## 3. Key Features
+
+- Product grid with responsive layout and product cards.
+- Client-side cart (context/state) with add/remove/increment/decrement.
+- Sticky cart sidebar on desktop (25% width) and floating modal/cart on mobile.
+- Print-friendly invoice (basic) and demo `/api/checkout` endpoint.
+- Backend proxy for Dummy Products (dev) vs WooCommerce (prod) with env-driven switch.
+
+---
+
+## 4. Project Structure (Overview)
+
+```
+vite-react-mpos
+├─ frontend/                # Vite + React frontend
+│  ├─ index.html
+│  ├─ package.json
+│  ├─ postcss.config.cjs
+│  ├─ tailwind.config.cjs
+│  ├─ vite.config.js
+│  ├─ public/
+│  └─ src/
+│     ├─ main.jsx
+│     ├─ App.jsx
+│     ├─ hooks/
+│     │  └─ useProducts.js
+│     ├─ context/
+│     │  └─ CartContext.jsx
+│     ├─ components/
+│     │  ├─ ProductCard.jsx
+│     │  ├─ Products.jsx
+│     │  ├─ Cart.jsx
+│     │  ├─ CartSummary.jsx
+│     │  ├─ CheckoutForm.jsx
+│     │  └─ ... other components
+│     ├─ pages/
+│     │  ├─ Dashboard.jsx
+│     │  ├─ ProductsDashboard.jsx
+│     │  ├─ Checkout.jsx
+│     │  ├─ PlaceOrder.jsx
+│     │  ├─ Onboarding.jsx
+│     │  ├─ Signin.jsx
+│     │  └─ Signup.jsx
+│     └─ styles/
+│        ├─ index.css
+│        └─ tailwind stuff
+└─ server/                  # Node/Express API proxy (dev/prod switching)
+   ├─ index.js              # Express app with /api routes
+   └─ package.json
+```
+
+---
+
+## 5. Backend: Endpoints & Behavior
+
+- GET /api/products
+  - Description: Returns a list of available products.
+  - Behavior: In dev `DATA_SOURCE=dummy` the backend calls `DUMMY_API_URL` (defaults to `https://dummyjson.com/products`). In `woocommerce` mode it proxies WooCommerce REST API and adds authentication params.
+
+- GET /api/products/:id
+  - Description: Returns a single product by ID.
+
+- POST /api/checkout
+  - Description: Demo checkout endpoint; calculates and returns the total. In prod this would typically create a payment session.
+
+Helper: The backend normalizes product objects using `toClientProduct(p)` to ensure frontend receives consistent fields: `{ id, title, price, description, thumbnail }`.
+
+---
+
+## 6. Frontend: Key Components & Responsibilities
+
+- `CartContext.jsx` — Global cart context using `useReducer`.
+  - Actions: ADD, REMOVE, INCREMENT, DECREMENT, CLEAR.
+  - Exposes: `items`, `add`, `remove`, `clear`, `increment`, `decrement`.
+
+- `useProducts.js` — Fetches `/api/products` and returns products.
+
+- `Products.jsx` — Fetches products with `useProducts` and renders `ProductCard` components in a responsive grid.
+
+- `ProductCard.jsx` — Displays single product info with an "Add to cart" button.
+
+- `Cart.jsx` — Mobile cart modal with a table and actions to edit/remove items; checkout navigates to the checkout page.
+
+- `CartSummary.jsx` — Sticky desktop sidebar (25%) with cart table and actions; includes `checkout` which prints invoice HTML.
+
+- `Checkout.jsx` / `PlaceOrder.jsx` — UI for collecting billing/payment info and triggering `POST /api/checkout` and finalizing the order.
+
+---
+
+## 7. UI & Layout Notes
+
+- Desktop: 75% / 25% split (main product grid and sticky cart sidebar). Use grid layout in `App.jsx` and utility classes in Tailwind: `md:grid-cols-4` and `md:col-span-*`.
+- Mobile: Floating cart button (bottom) opens a modal `Cart.jsx` that contains the same actions.
+
+---
+
+## 8. Developer Workflow & Local Setup
+
+1. Clone the repo.
+2. Start backend and frontend (two terminals):
+   - `cd server && npm install && npm run dev`
+   - `cd frontend && npm install && npm run dev`
+3. Visit `http://localhost:5173` to use the frontend (Vite default)
+
+Env config (server/.env):
+
+```env
+DATA_SOURCE=dummy
+DUMMY_API_URL=https://dummyjson.com/products
+WOO_BASE_URL=https://your-shop.com
+WOO_CONSUMER_KEY=ck_xxx
+WOO_CONSUMER_SECRET=cs_xxx
+PORT=3000
+```
+
+---
+
+## 9. Testing & Debugging
+
+- The frontend relies on `fetch('/api/products')`. Confirm backend is running on `PORT` and Vite `proxy` (configured in `frontend/vite.config.js`) routes `/api` requests to `http://localhost:3000`.
+- Simulate error conditions by changing `DATA_SOURCE` in `.env`.
+
+---
+
+## 10. Roadmap & Improvements
+
+- Add persistent orders with a database (Postgres/Mongo).
+- Add authentication & user session handling (JWT + cookies).
+- Add real checkout via Stripe integration on the backend.
+- Improve UI accessibility and add unit/e2e tests.
+
+---
+
+## 11. Prompt Frameworks & Copilot Hints
+
+Use the following when adding new features or files with Copilot:
+
+```
+Role: Frontend Developer
+Task: Implement [feature]
+Details: Use Tailwind CSS and React 19.x. Ensure mobile-first responsive layout; add tests and TypeScript where applicable.
+Output: Full code file(s), component(s) and changes required.
+```
+
+For backend work:
+
+```
+Role: Backend Developer
+Task: Implement/Extend API [endpoint]
+Details: Use Express, env-based config, and node-fetch for 3rd-party endpoints.
+Output: `server/index.js` changes, new tests, updated env variables.
+```
+
+---
+
+## 12. Contribution & Review Workflow
+
+- Use feature branches with descriptive names (feature/cart-improvements, fix/api-proxy).
+- Add tests and keep PRs small and focused.
+- Run `npm run lint` (if added) and `npm test` before raising a PR.
+
+---
+
+## 13. Notes
+
+- This project is intentionally minimal; it focuses on a clean, approachable demo of a Vite + React POS flow and a small express backend.
+- Consider adding CI, tests, and a production build pipeline if you intend to run the app in real environments.
+
+---
+
+If you’d like, I can now add instructions for a specific deployment (Netlify / Vercel / Azure Static Web App, and Node backend host), or scaffold Stripe integration for a production checkout flow.
+
+---
+
+Last updated: November 26, 2025
+# 📘 Project Document: POS System (React + Node)
+
 ## 1. Project Overview
 
 - **Goal:** Build a cloud-based POS (Point of Sale) system with item browsing, cart, and checkout functionality.  

@@ -9,7 +9,7 @@ export default function OrderSummary({ items: propItems }) {
   const total = subtotal + shipping
 
   return (
-    <div className="space-y-4 text-gray-100">
+    <div className="space-y-4 text-gray-800">
       <div className="space-y-2">
         {items.length === 0 ? (
           <div className="text-sm text-gray-400">Your cart is empty</div>
@@ -23,9 +23,9 @@ export default function OrderSummary({ items: propItems }) {
         )}
       </div>
       <div className="border-t border-gray-800 pt-2 text-sm">
-        <div className="flex items-center justify-between"><span className="text-gray-300">Subtotal</span><span className="text-gray-300">${subtotal.toFixed(2)}</span></div>
-        <div className="flex items-center justify-between"><span className="text-gray-300">Shipping</span><span className="text-gray-300">${shipping.toFixed(2)}</span></div>
-        <div className="flex items-center justify-between font-bold text-lg mt-2"><span>Total</span><span className="text-gray-100">${total.toFixed(2)}</span></div>
+        <div className="flex items-center justify-between"><span className="text-gray-800">Subtotal</span><span className="text-gray-800">${subtotal.toFixed(2)}</span></div>
+        <div className="flex items-center justify-between"><span className="text-gray-800">Shipping</span><span className="text-gray-800">${shipping.toFixed(2)}</span></div>
+        <div className="flex items-center justify-between font-bold text-lg mt-2"><span>Total</span><span className="text-gray-800">${total.toFixed(2)}</span></div>
       </div>
     </div>
   )
