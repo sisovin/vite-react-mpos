@@ -101,7 +101,6 @@ export default function Dashboard() {
   }, [])
   const navigate = useNavigate()
   return (
-    <CartProvider>
       <div className="min-h-screen bg-gray-50">
         <header className="py-6 bg-white shadow-sm">
           <div className="w-full px-4 flex items-center justify-between">
@@ -174,6 +173,5 @@ export default function Dashboard() {
           {/* Do not show CartSummary inside Dashboard as requested */}
         </main>
       </div>
-    </CartProvider>
   )
 }

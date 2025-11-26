@@ -28,7 +28,6 @@ export default function ProductsDashboard() {
   }, [])
 
   return (
-    <CartProvider>
       <div className="min-h-screen bg-gray-50">
         <header className="py-6 bg-white shadow-sm">
           <div className="w-full px-4 flex items-center justify-between">
@@ -60,6 +59,5 @@ export default function ProductsDashboard() {
           </section>
         </main>
       </div>
-    </CartProvider>
   )
 }
