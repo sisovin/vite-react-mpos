@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 // CartProvider removed; App.jsx wraps the whole app instead
 import Products from '../components/Products'
 import CartSummary from '../components/CartSummary'
+import { useCart } from '../context/CartContext'
 import { useNavigate } from 'react-router-dom'
 
 export default function ProductsDashboard() {
@@ -26,8 +27,11 @@ export default function ProductsDashboard() {
     // Enter POS if not yet active
     if (!posActive) setPosActive(true)
   }, [])
+  const { items } = useCart()
+  const total = items.reduce((s, i) => s + (Number(i.price) || 0) * (i.qty || 1), 0)
 
   return (
+    <>
       <div className="min-h-screen bg-gray-50">
         <header className="py-6 bg-white shadow-sm">
           <div className="w-full px-4 flex items-center justify-between">
@@ -59,5 +63,13 @@ export default function ProductsDashboard() {
           </section>
         </main>
       </div>
+      {/* Mobile sticky footer */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t p-3 flex items-center justify-between gap-3">
+        <div className="text-sm">Total: <span className="font-semibold">${total.toFixed(2)}</span></div>
+        <div>
+          <button onClick={() => navigate('/place-order')} className={`px-4 py-3 bg-green-500 text-white rounded`}>Place order</button>
+        </div>
+      </div>
+    </>
   )
 }
