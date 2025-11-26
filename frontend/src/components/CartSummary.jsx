@@ -29,8 +29,8 @@ export default function CartSummary() {
           <button className="px-3 py-2 bg-blue-600 text-white rounded" onClick={() => setIsOpen(true)}>Cart ({items.length})</button>
           <div className="text-sm">Total: <span className="font-semibold">${total.toFixed(2)}</span></div>
         </div>
-        <div>
-          <button className={`px-4 py-2 rounded ${items.length ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`} onClick={() => { if (items.length) { setIsOpen(false); navigate('/checkout') } }} disabled={!items.length}>Checkout</button>
+          <div>
+          <button className={`px-4 py-2 rounded ${items.length ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`} onClick={() => { if (items.length) { setIsOpen(false); navigate('/place-order') } }} disabled={!items.length}>Checkout</button>
         </div>
       </div>
 
@@ -80,8 +80,8 @@ export default function CartSummary() {
 
         <div className="mt-4 border-t border-gray-800 pt-3">
           <div className="flex items-center justify-between font-bold text-lg text-white">Total<span className="text-gray-100">${total.toFixed(2)}</span></div>
-          <div className="mt-3 space-x-2">
-            <button className="px-3 py-2 bg-green-500 text-white rounded" onClick={() => navigate('/checkout')}>Checkout</button>
+            <div className="mt-3 space-x-2">
+            <button className="px-3 py-2 bg-green-500 text-white rounded" onClick={() => navigate('/place-order')}>Checkout</button>
             <button className="px-3 py-2 bg-red-500 text-white rounded" onClick={clear}>Clear</button>
           </div>
         </div>

@@ -8,6 +8,7 @@ import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Checkout from './pages/Checkout'
 import ProductsDashboard from './pages/ProductsDashboard'
+import PlaceOrder from './pages/PlaceOrder'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pos" element={<ProductsDashboard />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/place-order" element={<PlaceOrder />} />
         </Routes>
       </div>
       </ErrorBoundary>
