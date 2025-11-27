@@ -338,6 +338,8 @@ If you'd like, I can also add a deployment guide for Vercel, Netlify (frontend) 
   - Build command: `npm --prefix frontend run build`
   - Output directory: `frontend/dist`
 
+⚠️ If your `vercel.json` contains a `builds` array, Vercel ignores the Build & Development Settings in the Project Settings (you'll see a warning in the Vercel UI). Prefer setting `root` + `installCommand`/`buildCommand` in `vercel.json` or configure Project Settings for the `frontend` workspace root.
+
 💡 Note: Vercel runs installs with NODE_ENV=production by default; adding `--include=dev` ensures build tools like Vite and plugins are installed and available during build.
 ````
 # Vite + React EShop (Example)
