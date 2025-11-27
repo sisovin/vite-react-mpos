@@ -62,6 +62,17 @@ npm run dev
 
 Open `http://localhost:5173` to view the app.
 
+Optional: Run backend serverless locally with `vercel dev` (requires Vercel CLI and login):
+
+```pwsh
+npm i -g vercel
+vercel login
+cd frontend
+vercel dev
+```
+
+This will run Vercel dev and serve serverless functions under `/api/*` in the same environment as the frontend.
+
 If product fetching fails, ensure the backend is running and the Vite proxy points to the backend port.
 
 ---
@@ -271,6 +282,11 @@ PORT=3000
 ```
 
 In `DATA_SOURCE=woocommerce` mode the server uses WooCommerce API credentials.
+
+On Vercel deployments, set the following environment variables in Project Settings (or use a `.env` for local dev):
+- `DATA_SOURCE` — `dummy` or `woocommerce`
+- `DUMMY_API_URL` — e.g., `https://dummyjson.com/products`
+- `WOO_BASE_URL`, `WOO_CONSUMER_KEY`, `WOO_CONSUMER_SECRET` — for WooCommerce access
 
 ---
 

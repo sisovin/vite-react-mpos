@@ -13,6 +13,7 @@
 
 - Frontend (Vite + React): SPA. Uses React Router and a global cart via `CartContext`.
 - Backend (Express): Provides proxy routes under `/api/*` that return normalized product object shapes for the frontend.
+- Backend: implemented as Vercel serverless functions under `frontend/api/*` for deployments, with a small local `server/` Express app retained for local development.
 - Product fetching flow: Frontend calls `/api/products` → Backend fetches from the configured `DATA_SOURCE` → Backend normalizes and returns products.
 - Checkout flow (demo): Frontend posts items to `/api/checkout`, backend responds with total; the frontend renders a printable invoice and uses `window.print()`.
 
