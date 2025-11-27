@@ -10,6 +10,7 @@
 - Backend: `server/` (Node + Express, proxy API)
 - Local frontend dev URL: http://localhost:5173
 - Local backend dev URL: http://localhost:3000
+- In Vercel deployments the backend is implemented as serverless functions under `frontend/api/*`.
 
 ---
 
