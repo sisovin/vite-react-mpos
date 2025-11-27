@@ -90,23 +90,23 @@ Key frontend files
 
 Key backend files
 - `server/index.js` - Express app with these routes:
-	- GET `/api/products`
-	- GET `/api/products/:id`
-	- POST `/api/checkout`
+  - GET `/api/products`
+  - GET `/api/products/:id`
+  - POST `/api/checkout`
 
 ---
 
 ## 🔌 Backend / API details
 
 - GET `/api/products`
-	- Description: proxies to either a Dummy JSON source or WooCommerce API depending on `DATA_SOURCE` env value.
-	- Returns: Array of normalized products { id, title, price, description, thumbnail }
+  - Description: proxies to either a Dummy JSON source or WooCommerce API depending on `DATA_SOURCE` env value.
+  - Returns: Array of normalized products { id, title, price, description, thumbnail }
 
 - GET `/api/products/:id`
-	- Description: returns a single normalized product
+  - Description: returns a single normalized product
 
 - POST `/api/checkout`
-	- Description: demo endpoint that calculates the total and returns a success object.
+  - Description: demo endpoint that calculates the total and returns a success object.
 
 ### server/.env (example)
 
@@ -232,8 +232,8 @@ vite-react-mpos
 │  ├─ src/
 │  └─ styles/
 └─ server/                # Node/Express proxy
-	├─ index.js
-	└─ package.json
+  ├─ index.js
+  └─ package.json
 ```
 
 Key frontend files
@@ -290,6 +290,15 @@ This repository has no automated test suite currently. Ideas:
 
 ---
 
+## 🔁 CI (GitHub Actions)
+
+- This repository includes a simple GitHub Actions workflow at `.github/workflows/ci.yml` that runs on pushes and pull requests to `main`.
+  - What the workflow checks:
+  - Frontend build: installs frontend dependencies (including dev dependencies) and runs `npm --prefix frontend run build`.
+  - Backend smoke test: installs server dependencies, starts the server, and calls `/api/products` to ensure the backend responds.
+
+You can extend the workflow later to add lints, tests, and more thorough validations.
+
 ## 🔭 Roadmap
 
 - Add real payments: Stripe or PayPal integration
@@ -305,6 +314,12 @@ Small changes are welcome: fork, open PR with a clear description, and add tests
 
 ---
 
+## 🔐 .gitignore updates
+
+- The `.gitignore` file has been expanded to include common artifacts and generated files such as `dist/`, `build/`, `.DS_Store`, editor folders, and more. This keeps the repository clean and prevents committing environment-specific files.
+
+---
+
 ## 📜 License
 
 This example is provided as-is for learning/demo purposes. Add a LICENSE if you intend to reuse components in production.
@@ -312,6 +327,18 @@ This example is provided as-is for learning/demo purposes. Add a LICENSE if you 
 ---
 
 If you'd like, I can also add a deployment guide for Vercel, Netlify (frontend) + Render or Azure for the Node backend — tell me where you'd like to deploy.
+
+---
+
+## ⚙️ Deploying to Vercel
+
+- This repository includes a `vercel.json` that ensures Vercel installs devDependencies for the `frontend` package before building (so Vite and Tailwind are available during the production build). If you prefer not to commit `vercel.json`, configure Vercel Project Settings instead:
+
+  - Install command: `npm --prefix frontend install --include=dev`
+  - Build command: `npm --prefix frontend run build`
+  - Output directory: `frontend/dist`
+
+💡 Note: Vercel runs installs with NODE_ENV=production by default; adding `--include=dev` ensures build tools like Vite and plugins are installed and available during build.
 ````
 # Vite + React EShop (Example)
 
