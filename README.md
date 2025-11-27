@@ -38,6 +38,7 @@ Prerequisites:
 
 - Node 18+ (or >=16 depending on your environment)
 - npm (or yarn)
+ - Node 24+ for Vercel deployments (the Vercel build environment uses Node 24 and the `frontend/package.json` sets `engines.node` to `24.x`)
 
 ### Install & Run
 
