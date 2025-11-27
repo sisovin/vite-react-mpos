@@ -355,7 +355,13 @@ If you'd like, I can also add a deployment guide for Vercel, Netlify (frontend) 
   - Build command: `npm --prefix frontend run build`
   - Output directory: `frontend/dist`
 
-⚠️ If your `vercel.json` contains a `builds` array, Vercel ignores the Build & Development Settings in the Project Settings (you'll see a warning in the Vercel UI). Prefer setting `root` + `installCommand`/`buildCommand` in `vercel.json` or configure Project Settings for the `frontend` workspace root.
+⚠️ Important: `vercel.json` schema does not accept a top-level `root` property. If you set `root` in `vercel.json` you will see a schema validation error.
+
+Options to set the project root (monorepo):
+- Use `builds` in `vercel.json` and point to `frontend/package.json` with proper `distDir` (this comes from our current `vercel.json`). This tells Vercel exactly how to build the frontend (and ignores Build & Dev Project Settings in the UI — which is fine if you want the configuration stored in the repo).
+- Or, **do not** use `builds` in `vercel.json` and instead set the **Root Directory** to `frontend` in the Vercel Project Settings, and add Project Settings `Install Command` and `Build Command` there.
+
+Note: If you prefer Project Settings, remove `builds` from `vercel.json` again and configure the `frontend` root and build commands directly in the Vercel UI.
 
 If you see a `404` after deploying, check these in order:
 1. Confirm the deployment build completed successfully. If the build failed, inspect the deployment logs in the Vercel dashboard.
