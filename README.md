@@ -340,6 +340,13 @@ If you'd like, I can also add a deployment guide for Vercel, Netlify (frontend) 
 
 ⚠️ If your `vercel.json` contains a `builds` array, Vercel ignores the Build & Development Settings in the Project Settings (you'll see a warning in the Vercel UI). Prefer setting `root` + `installCommand`/`buildCommand` in `vercel.json` or configure Project Settings for the `frontend` workspace root.
 
+If you see a `404` after deploying, check these in order:
+1. Confirm the deployment build completed successfully. If the build failed, inspect the deployment logs in the Vercel dashboard.
+2. Ensure `vercel.json` `root` is `frontend` (or set Project Settings > Root Directory to `frontend`).
+3. Make sure `outputDirectory` is set to `dist` (relative to `root`). If you see `frontend/dist` in the UI instead of `dist`, remove `builds` from `vercel.json` or use the Project Settings to set Output Directory correctly.
+4. Check your `installCommand`/`buildCommand` are correct; include `--include=dev` if you rely on `devDependencies` during build (e.g., Vite, PostCSS).
+5. If you use custom rewrites or routes, ensure they point to the `index.html` or built files under the specified `outputDirectory`.
+
 💡 Note: Vercel runs installs with NODE_ENV=production by default; adding `--include=dev` ensures build tools like Vite and plugins are installed and available during build.
 ````
 # Vite + React EShop (Example)
