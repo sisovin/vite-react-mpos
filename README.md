@@ -306,6 +306,90 @@ This repository has no automated test suite currently. Ideas:
 - Ensure the frontend proxy is routing `/api` to your backend (see `frontend/vite.config.js`).
 - Allow popups for the print flow to open.
 
+### Local dev server tips (avoid port conflicts / EADDRINUSE)
+
+- If you see `Error: listen EADDRINUSE: address already in use :::3000`, another process is already listening on port 3000. Find and stop it with these commands:
+
+  PowerShell:
+  ```pwsh
+  # Find process listening on port 3000
+  netstat -ano | findstr 3000
+  # Find the node process
+  tasklist /FI "IMAGENAME eq node.exe"
+  # Get the command line of the process (replace PID)
+  Get-CimInstance Win32_Process -Filter "ProcessId = <PID>" | Select-Object ProcessId,CommandLine
+  # Stop the process (replace PID)
+  Stop-Process -Id <PID> -Force
+  ```
+
+  Linux / macOS:
+  ```bash
+  lsof -i :3000
+  kill -9 <PID>
+  ```
+
+- Use `nodemon` to run the backend and auto-restart on file changes:
+  ```pwsh
+  cd server
+  npm install
+  npm run dev   # runs nodemon index.js
+  ```
+
+### Run serverless functions locally (Vercel dev)
+
+You can emulate the production environment (including serverless functions under `frontend/api`) using Vercel CLI:
+
+```pwsh
+npm i -g vercel
+vercel login
+cd frontend
+vercel dev
+# This will serve your frontend and serverless functions (api/*) locally
+```
+
+### Set up Node 24 locally (nvm / nvm-windows)
+
+For parity with Vercel's Node 24 runtime, switch your local Node version with `nvm` (Linux/macOS) or `nvm-windows` on Windows:
+
+Linux / macOS (nvm):
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+# install Node 24.x
+nvm install 24
+nvm use 24
+node -v # should show v24.x
+```
+
+Windows (nvm-windows):
+```pwsh
+# Install nvm-windows from https://github.com/coreybutler/nvm-windows/releases
+nvm install 24.0.0
+nvm use 24.0.0
+node -v # should show v24.x
+```
+
+Note: `npm install` may warn about engines if your local Node version is different; prefer using Node 24 for development to match Vercel.
+
+### Testing deployed domains and protected deployments
+
+- Use the **public** deployment domain shown in Vercel's Deployments page (e.g., `https://mpos-abc.vercel.app`). Do not use the Vercel project dashboard URL (`vercel.com/...`) — that page is the UI and not the deployed domain.
+- If a deployed domain returns `401 Unauthorized`, the deployment is protected. You can:
+  - Disable protection in Vercel Dashboard (Project -> Security -> Disable protection) so the domain is public, or
+  - Generate a bypass token and test with the URL that includes the bypass token, e.g.:
+    `https://<domain>/<path>?x-vercel-set-bypass-cookie=true&x-vercel-protection-bypass=$BYPASS_TOKEN`
+
+Example quick smoke tests (PowerShell):
+```pwsh
+# Root page
+Invoke-RestMethod -Uri 'https://<DEPLOY_URL>' -Method Head -UseBasicParsing
+# GET list of products
+Invoke-RestMethod -Uri 'https://<DEPLOY_URL>/api/products' -UseBasicParsing | ConvertTo-Json -Depth 5
+# GET single product
+Invoke-RestMethod -Uri 'https://<DEPLOY_URL>/api/products/1' -UseBasicParsing
+# POST checkout
+Invoke-RestMethod -Uri 'https://<DEPLOY_URL>/api/checkout' -Method POST -Body (ConvertTo-Json @{items=@(@{price=10;qty=2})}) -ContentType 'application/json' -UseBasicParsing
+```
+
 ---
 
 ## 🔁 CI (GitHub Actions)
