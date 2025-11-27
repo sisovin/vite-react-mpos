@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "root": "frontend",
   "installCommand": "npm --prefix frontend install --include=dev",
   "buildCommand": "npm --prefix frontend run build",
   "builds": [
